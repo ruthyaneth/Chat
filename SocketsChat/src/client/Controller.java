@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,11 +45,15 @@ public class Controller {
 	private HandlerLanguage handlerLanguage;
 	private WindowClient client;
 	private PanelLogin panelLogin;
+	private LoginFrame frameLogin;
 	private FrameNotif frameNotif;
+	private FirstPanel firstPanel;
+	private PanelRegister panelRegister;
+	private SignupPanel signupPanel;
 	String userName;
 	Socket clientSocket = null;
 	ServerSocket fileSocket;
-
+	ArrayList listBlocked = new ArrayList(); 
 	PrintWriter clientOut = null; // outToServer
 	BufferedReader clientIn = null;
 	
@@ -123,34 +128,34 @@ public class Controller {
 					}
 				} else if (input.startsWith("INCORRECT")) {
 					frameNotif = new FrameNotif("Wrong id or password.");
-					usernameTextField.setText("");
-					passwordLogin.setText("");
+					panelLogin.sendTextUserName("");
+					panelLogin.sendTextPassword("");
 				} else if (input.startsWith("ISONLINE")) {
 					frameNotif = new FrameNotif("User is already online.");
-					usernameTextField.setText("");
-					passwordLogin.setText("");
+					panelLogin.sendTextUserName("");
+					panelLogin.sendTextPassword("");
 				} else if (input.startsWith("ISBLOCKED")) {
 					frameNotif = new FrameNotif("This user has been blocked! Please contact admin.");
-					usernameTextField.setText("");
-					passwordLogin.setText("");
-					loginFrame.setVisible(false);
+					panelLogin.sendTextUserName("");
+					panelLogin.sendTextPassword("");
+					frameLogin.sendVisible(false);
 				} else if (input.startsWith("LOGINOK")) {
-					loginFrame.setVisible(false);
-					this.setVisible(true);
-					userStatusLabel.setText("Nickname: " + userName + "                   Status: ");
+					frameLogin.setVisible(false);
+					frameLogin.sendVisible(false);
+					firstPanel.sendTxtUserStatus("Nickname: " + userName + "                   Status: ");
 					clientOut.println("CONNECTED" + userName);
 				} else if (input.startsWith("DUPLICATE")) {
 					frameNotif = new FrameNotif("Duplicate account.");
-					usernameRegister.setText("");
-					passwordRegister.setText("");
-					passwordRetypeRegister.setText("");
+					panelRegister.sendTxtUserNameRegister("");
+					panelRegister. sendTxtPasswordRegister("");
+					panelRegister.sendTextPasswordRetypeRegister("");
 				} else if (input.startsWith("REGISTEROK")) {
 					signupPanel.setVisible(false);
-					usernameRegister.setText("");
-					passwordRegister.setText("");
-					passwordRetypeRegister.setText("");
-					loginFrame.add(loginPanel);
-					loginPanel.setVisible(true);
+					panelRegister.sendTxtUserNameRegister("");
+					panelRegister.sendTxtPasswordRegister("");
+					panelRegister.sendTextPasswordRetypeRegister("");
+					frameLogin.add(panelLogin);
+					panelLogin.setVisible(true);
 				} else if (input.startsWith("PUBLIC")) {
 					String usernameTextField = input.substring(6, input.indexOf("|", 0));
 					if (!listBlocked.contains(usernameTextField)) {
