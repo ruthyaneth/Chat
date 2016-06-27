@@ -32,4 +32,8 @@ public class FrameNotif  extends JFrame{
      this.setTitle("Notification");
      this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 	}
+
+	public JLabel getNotiMess() {
+		return notiMess;
+	}
 }

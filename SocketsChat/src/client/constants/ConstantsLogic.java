@@ -1,4 +1,4 @@
-package client;
+package client.constants;
 
 public class ConstantsLogic {
 	
