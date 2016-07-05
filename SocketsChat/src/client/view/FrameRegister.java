@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.swing.JFrame;
 
 import client.Controller;
-import client.PanelRegister;
 import client.constants.ConstantsView;
 import config.HandlerLanguage;
 import config.HandlerProperties;
@@ -23,13 +22,16 @@ public class FrameRegister  extends JFrame {
 		this.controller= controller;
 		panelRegister = new PanelRegister(controller);
 		this.add(panelRegister);
-		this.setVisible(true);
 		try {
 			changeLenguage();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	public PanelRegister getPanelRegister() {
+		return panelRegister;
+	}
+
 	public void changeLenguage() throws IOException {
 
 		HandlerProperties handlerProperties = new HandlerProperties(HandlerLanguage.language);

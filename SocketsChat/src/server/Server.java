@@ -5,10 +5,7 @@
  */
 package server;
 
-/**
- *
- * @author VS9 X64Bit
- */
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
@@ -275,7 +272,6 @@ public class Server extends JFrame {
                 clientThread.start();
             }
         } catch (IOException e) {
-
         } finally {
             serverSocket.close();
         }
@@ -296,7 +292,6 @@ public class Server extends JFrame {
         notificationFrame.setTitle("Notification");
         notificationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
-
     public void privateChatFrame() {     //UI: Private Chat Window
         privateChatFrame.setLayout(new BorderLayout());
         privateChatFrame.add(privateChatLabel,BorderLayout.NORTH);

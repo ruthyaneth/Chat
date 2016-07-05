@@ -34,6 +34,10 @@ public class FrameLogin extends JFrame {
 		}
 		this.setVisible(true);
 	}
+	
+	public PanelLogin getPanelLogin() {
+		return panelLogin;
+	}
 
 	public void sendVisible(boolean visible) {
 		this.setVisible(visible);

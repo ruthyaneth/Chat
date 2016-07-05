@@ -45,7 +45,6 @@ public class PanelLogin extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
 	private void init() {
 		addLabelUserName();
 		addUserNameFieldLogin();
@@ -53,14 +52,6 @@ public class PanelLogin extends JPanel {
 		addPasswordLogin();
 		addButtonLogin();
 		addButtonRegister();
-	}
-
-	public void sendTextPassword(String text) {
-		passwordLogin.setText(text);
-	}
-
-	public void sendTextUserName(String text) {
-		usernameTextFieldLogin.setText(text);
 	}
 
 	private void addButtonLogin() {
@@ -95,7 +86,14 @@ public class PanelLogin extends JPanel {
 	private void addLabelPassword() {
 		labelPassword = new JLabel();
 		this.add(labelPassword);
+	}
 
+	public JTextField getUsernameTextFieldLogin() {
+		return usernameTextFieldLogin;
+	}
+
+	public JPasswordField getPasswordLogin() {
+		return passwordLogin;
 	}
 
 	public void changeLenguage() throws IOException {

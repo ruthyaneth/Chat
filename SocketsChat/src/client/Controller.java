@@ -1,10 +1,5 @@
 package client;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -24,6 +19,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -43,6 +39,8 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -55,33 +53,34 @@ import client.view.FrameLogin;
 import client.view.FrameRegister;
 import client.view.GroupChatFrame;
 import client.view.PanelLogin;
+import client.view.PanelRegister;
 import client.view.WindowClient;
 import config.HandlerLanguage;
 import server.ReceiveAudio;
 import server.Server;
 
-public class Controller  implements ActionListener{
+public class Controller implements ActionListener {
 
 	private HandlerLanguage handlerLanguage;
 	private WindowClient windowClient;
 	private FrameLogin frameLogin;
-	private PanelLogin panelLogin;
-	private FrameNotif frameNotif;
 	private FirstPanel firstPanel;
-	private PanelRegister panelRegister;
 	private SignupPanel signupPanel;
-	private FrameChatPrivate frameChatPrivate ;
+	private FrameChatPrivate frameChatPrivate;
 	private GroupChatFrame groupChatFrame;
 	boolean isMasterGroupChat, isMemberGroupChat = false;
-	
+	private JTextArea privateTextArea = new JTextArea();
+	private JTextField privateChatTextField = new JTextField();
+	private FrameRegister frameRegister;
+
 	boolean isPrivateChat = false;
 	boolean isGroupChat = false;
 	String privatePartner = null;
 	String fileName = null;
-	String masterGroupName = null; 
+	String masterGroupName = null;
 	JTextPane chatArea = new JTextPane();
-	
-	
+	String username = null;
+
 	String userName;
 	Socket clientSocket = null;
 	ServerSocket fileSocket;
@@ -103,6 +102,8 @@ public class Controller  implements ActionListener{
 
 	public Controller() {
 		loadConfiguration();
+		frameRegister = new FrameRegister(this);
+		signupPanel = new SignupPanel();
 	}
 
 	public void loadConfiguration() {
@@ -116,43 +117,63 @@ public class Controller  implements ActionListener{
 			System.out.println(HandlerLanguage.language);
 		}
 	}
+
 	public void writeFile() throws Exception {
-		String filename = panelRegister.getUsernameRegister().getText() + "ChatRecord.txt";
+		String filename = frameRegister.getPanelRegister().getUsernameRegister().getText() + "ChatRecord.txt";
 		FileWriter writer = new FileWriter(new File(filename));
 		writer.write(chatArea.getText());
+		System.out.println(chatArea.getText());
 		writer.close();
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-		case ConstantsListener.A_LOGIN_BUTTON: 
+		
+		case ConstantsListener.A_LOGIN_BUTTON:
+			if (frameLogin.getPanelLogin().getUsernameTextFieldLogin().getText().equals("")
+					|| String.valueOf(frameLogin.getPanelLogin().getUsernameTextFieldLogin()).equals("")) {
+				new FrameNotif("Fields are empty.");
+				frameLogin.getPanelLogin().getUsernameTextFieldLogin().setText("");
+				frameLogin.getPanelLogin().getPasswordLogin().setText("");
+			} else if (ConstantsLogic.SERVER_NO_OK == true) {
+				username = frameLogin.getPanelLogin().getUsernameTextFieldLogin().getText().trim();
+				clientOut.println("CHECKUSER" + username + "|"
+						+ String.valueOf(frameLogin.getPanelLogin().getUsernameTextFieldLogin().getText().trim()).trim());
+				frameLogin.add(signupPanel);
+				frameLogin.getPanelLogin().setVisible(false);
+				signupPanel.setVisible(true);
+			}
 			break;
 		case ConstantsListener.A_REGISTER_BUTTON:
-			FrameRegister frameRegister = new FrameRegister(this);
+			frameRegister.setVisible(true);
 			break;
 		case ConstantsListener.A_BUTTON_REGISTER_OK:
-			panelRegister = new PanelRegister(this);
-			panelRegister.mostrar();
-				if (String.valueOf(panelRegister.getPasswordRegister().getPassword())
-						.equals(String.valueOf(panelRegister.getPasswordRetypeRegister().getPassword()))) {
-					if (panelRegister.getUsernameRegister().getText().equals("")
-							|| String.valueOf(panelRegister.getPasswordRegister().getPassword()).equals("")) {
-						openNotiFrame("Fields are empty .");
-						panelRegister.getUsernameRegister().setText("");
-						panelRegister.getPasswordRegister().setText("");
-						panelRegister.getPasswordRetypeRegister().setText("");
-					} else
-						clientOut.println("REGISTER" + panelRegister.getUsernameRegister().getText().trim() + "|"
-								+ String.valueOf(panelRegister.getPasswordRegister().getPassword()).trim());
-				} else {
-					openNotiFrame("Passwords are not the same.");
-					panelRegister.getUsernameRegister().setText("");
-					panelRegister.getPasswordRegister().setText("");
-					panelRegister.getPasswordRetypeRegister().setText("");
-				}
+
+			if (String.valueOf(frameRegister.getPanelRegister().getPasswordRegister().getPassword()).equals(
+					String.valueOf(frameRegister.getPanelRegister().getPasswordRetypeRegister().getPassword()))) {
+				if (frameRegister.getPanelRegister().getUsernameRegister().getText().equals("") || String
+						.valueOf(frameRegister.getPanelRegister().getPasswordRegister().getPassword()).equals("")) {
+					new FrameNotif("Fields are empty .");
+					frameRegister.getPanelRegister().getUsernameRegister().setText("");
+					frameRegister.getPanelRegister().getPasswordRegister().setText("");
+					frameRegister.getPanelRegister().getPasswordRetypeRegister().setText("");
+				} else
+					clientOut.println(
+							"REGISTER" + frameRegister.getPanelRegister().getUsernameRegister().getText().trim() + "|"
+									+ String.valueOf(
+											frameRegister.getPanelRegister().getPasswordRegister().getPassword())
+											.trim());
+			} else {
+				new FrameNotif("Passwords are not the same.");
+				frameRegister.getPanelRegister().getUsernameRegister().setText("");
+				frameRegister.getPanelRegister().getPasswordRegister().setText("");
+				frameRegister.getPanelRegister().getPasswordRetypeRegister().setText("");
+			}
 			break;
 		case ConstantsListener.A_BUTTON_BACK:
-			System.out.println("atras");
+			frameRegister.setVisible(false);
+			break;
 		}
 	}
 
@@ -160,18 +181,19 @@ public class Controller  implements ActionListener{
 		while (!ConstantsLogic.SERVER_NO_OK) {
 			int port;
 			frameLogin = new FrameLogin(this);
-			String ipAdd = JOptionPane.showInputDialog(frameLogin, "Please enter the server IP address.", "localhost"); 		if (ipAdd == null) {
+			String ipAdd = JOptionPane.showInputDialog(frameLogin, "Please enter the server IP address.", "localhost");
+			if (ipAdd == null) {
 				System.exit(0);
 			} else if (ipAdd.isEmpty()) {
 				JOptionPane.showInputDialog(frameLogin, "Please enter the server IP address", "localhost");
 			} else {
 				try {
 					clientSocket = new Socket(ipAdd, 60000);
-					clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); 
+					clientIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 					clientOut = new PrintWriter(clientSocket.getOutputStream(), true);
 					ConstantsLogic.SERVER_NO_OK = true;
 				} catch (Exception e1) {
-					frameNotif = new FrameNotif("Connect error! Please check the server IP.");
+					new FrameNotif("Connect error! Please check the server IP.");
 					ConstantsLogic.SERVER_NO_OK = false;
 				}
 			}
@@ -193,17 +215,17 @@ public class Controller  implements ActionListener{
 						model.clear();
 					}
 				} else if (input.startsWith("INCORRECT")) {
-					frameNotif = new FrameNotif("Wrong id or password.");
-					panelLogin.sendTextUserName("");
-					panelLogin.sendTextPassword("");
+					new FrameNotif("Wrong id or password.");
+//					panelLogin.getUsernameTextFieldLogin().setText("");
+//					panelLogin.getPasswordLogin().setText("");
 				} else if (input.startsWith("ISONLINE")) {
-					frameNotif = new FrameNotif("User is already online.");
-					panelLogin.sendTextUserName("");
-					panelLogin.sendTextPassword("");
+					new FrameNotif("User is already online.");
+//					panelLogin.getUsernameTextFieldLogin().setText("");
+//					panelLogin.getPasswordLogin().setText("");
 				} else if (input.startsWith("ISBLOCKED")) {
-					frameNotif = new FrameNotif("This user has been blocked! Please contact admin.");
-					panelLogin.sendTextUserName("");
-					panelLogin.sendTextPassword("");
+					new FrameNotif("This user has been blocked! Please contact admin.");
+//					panelLogin.getUsernameTextFieldLogin().setText("");
+//					panelLogin.getPasswordLogin().setText("");
 					frameLogin.sendVisible(false);
 				} else if (input.startsWith("LOGINOK")) {
 					frameLogin.setVisible(false);
@@ -211,17 +233,17 @@ public class Controller  implements ActionListener{
 					firstPanel.sendTxtUserStatus("Nickname: " + userName + "                   Status: ");
 					clientOut.println("CONNECTED" + userName);
 				} else if (input.startsWith("DUPLICATE")) {
-					frameNotif = new FrameNotif("Duplicate account.");
-					panelRegister.sendTxtUserNameRegister("");
-					panelRegister.sendTxtPasswordRegister("");
-					panelRegister.sendTextPasswordRetypeRegister("");
+					new FrameNotif("Duplicate account.");
+					frameRegister.getPanelRegister().getUsernameRegister().setText("");
+					frameRegister.getPanelRegister().getPasswordRegister().setText("");
+					frameRegister.getPanelRegister().getPasswordRetypeRegister().setText("");
 				} else if (input.startsWith("REGISTEROK")) {
 					signupPanel.setVisible(false);
-					panelRegister.sendTxtUserNameRegister("");
-					panelRegister.sendTxtPasswordRegister("");
-					panelRegister.sendTextPasswordRetypeRegister("");
-					frameLogin.add(panelLogin);
-					panelLogin.setVisible(true);
+					frameRegister.getPanelRegister().getUsernameRegister().setText("");
+					frameRegister.getPanelRegister().getPasswordRegister().setText("");
+					frameRegister.getPanelRegister().getPasswordRetypeRegister().setText("");
+					frameLogin.add(frameLogin.getPanelLogin());
+					frameLogin.getPanelLogin().setVisible(true);
 				} else if (input.startsWith("PUBLIC")) {
 					String usernameTextField = input.substring(6, input.indexOf("|", 0));
 					if (!listBlocked.contains(usernameTextField)) {
@@ -261,8 +283,8 @@ public class Controller  implements ActionListener{
 					if (listBlocked.contains(userRequest)) {
 						clientOut.println("BLOCKPRIVATE" + userRequest);
 					} else if (isPrivateChat == false && partner.equals(userName)) {
-						frameChatPrivate.sendTxtLabelPrivateChat("Private chat with " , userRequest);
-						
+						frameChatPrivate.sendTxtLabelPrivateChat("Private chat with ", userRequest);
+
 						frameChatPrivate.setTitle("Nickname:" + userName);
 						frameChatPrivate.setVisible(true);
 						privatePartner = userRequest;
@@ -280,7 +302,7 @@ public class Controller  implements ActionListener{
 					}
 				} else if (input.startsWith("BUSY")) {
 					if (input.substring(4).equals(userName)) {
-						frameNotif = new FrameNotif("Requested user is busy! Try again later.");
+						new FrameNotif("Requested user is busy! Try again later.");
 						frameChatPrivate.sendTextPrivateChatTextFiel("");
 						frameChatPrivate.sendTxtArea("");
 						frameChatPrivate.dispose();
@@ -289,7 +311,7 @@ public class Controller  implements ActionListener{
 					}
 				} else if (input.startsWith("BLOCKPRIVATE")) {
 					if (input.substring(12).equals(userName)) {
-						frameNotif = new FrameNotif("You has blocked this usernameTextField from chat.");
+						new FrameNotif("You has blocked this usernameTextField from chat.");
 						frameChatPrivate.sendTextPrivateChatTextFiel("");
 						frameChatPrivate.sendTextPrivateChatTextFiel("");
 						frameChatPrivate.sendTextArea("");
@@ -302,7 +324,7 @@ public class Controller  implements ActionListener{
 					String ip = input.substring(input.indexOf(";") + 1, input.indexOf("*"));
 					int port = Integer.parseInt(input.substring(input.indexOf("*") + 1));
 					if (usernameTextField.equals(userName)) {
-						frameNotif = new FrameNotif("Server starts voice chat with you");
+						new FrameNotif("Server starts voice chat with you");
 						final Socket conn = new Socket(ip, port);
 						final JFrame callFr = new JFrame();
 						JPanel callPn = new JPanel();
@@ -357,13 +379,13 @@ public class Controller  implements ActionListener{
 										dos.write(soundData, 0, bytesRead);
 									} catch (Exception e) {
 										conn.close();
-										frameNotif = new FrameNotif("Data communication error! Exit!");
+										new FrameNotif("Data communication error! Exit!");
 										break;
 									}
 								}
 							} else {
 								conn.close();
-								frameNotif = new FrameNotif("Server disconnected audio chat!");
+								new FrameNotif("Server disconnected audio chat!");
 								break;
 							}
 						}
@@ -373,8 +395,7 @@ public class Controller  implements ActionListener{
 					}
 				} else if (input.startsWith("REJECTFILE")) {
 					if (input.substring(10, input.indexOf(";")).equals(userName)) {
-						frameNotif = new FrameNotif(
-								input.substring(input.indexOf(",") + 1) + " just declined your file.");
+						new FrameNotif(input.substring(input.indexOf(",") + 1) + " just declined your file.");
 					}
 				} else if (input.startsWith("ACCEPTFILE")) {
 					String sender = input.substring(10, input.indexOf(";"));
@@ -406,7 +427,7 @@ public class Controller  implements ActionListener{
 							doc.insertString(doc.getLength(), "* File transfer to " + reciever + " completed * \n",
 									doc.getStyle("notification"));
 						} catch (Exception e) {
-							frameNotif = new FrameNotif(e.getMessage());
+							new FrameNotif(e.getMessage());
 						}
 					}
 				} else if (input.startsWith("FILE")) {
@@ -421,7 +442,7 @@ public class Controller  implements ActionListener{
 								sender + " would like to transfer file to you, Do you accept ?", "File Transfer",
 								JOptionPane.YES_NO_OPTION);
 						if (confirm == JOptionPane.YES_OPTION) {
-//							fileRequest = fileName;
+							// fileRequest = fileName;
 							clientOut.println("ACCEPTFILE" + input.substring(4));
 						} else {
 							clientOut.println("REJECTFILE" + input.substring(4));
@@ -474,7 +495,7 @@ public class Controller  implements ActionListener{
 					if (listBlocked.contains(master) && usernameTextField.equals(userName)) {
 						clientOut.println("BLOCKEDGROUP" + master);
 					} else if (!isGroupChat && usernameTextField.equals(userName)) {
-						int confirm = JOptionPane.showConfirmDialog( new GroupChatFrame(),
+						int confirm = JOptionPane.showConfirmDialog(new GroupChatFrame(),
 								master + " would like to invite you to his group, Do you accept ?", "Group chat",
 								JOptionPane.YES_NO_OPTION);
 						if (confirm == JOptionPane.YES_OPTION) {
@@ -499,73 +520,63 @@ public class Controller  implements ActionListener{
 						docGroup.insertString(docGroup.getLength(), input.substring(input.indexOf("|", 0) + 1) + "\n",
 								docGroup.getStyle("regular"));
 				} else if (input.startsWith("REJECTINVITE") && isMasterGroupChat) {
-					frameNotif = new FrameNotif(input.substring(12) + " decline to join.");
+					new FrameNotif(input.substring(12) + " decline to join.");
 				} else if (input.startsWith("NOJOIN") && isMasterGroupChat) {
 					if (!input.substring(6).equals(userName))
-						openNotiFrame(input.substring(6) + " already have a group chat.");
+						new FrameNotif(input.substring(6) + " already have a group chat.");
 				} else if (input.startsWith("BLOCKEDGROUP")) {
 					if (userName.equals(input.substring(12)))
-						openNotiFrame("User has blocked you .");
+						new FrameNotif("User has blocked you .");
 				} else if (input.startsWith("DELETEPRIVATE") && input.substring(13).equals(userName)) {
 					isPrivateChat = false;
 					privatePartner = null;
 //					privateTextArea.setText("");
 //					privateChatTextField.setText("");
-					;
 					frameChatPrivate.dispose();
-//					openNotiFrame("Private chat has been cancelled");
-//				} else if (input.startsWith("CANCELGROUP") && isGroupChat && isMemberGroupChat) {
-//					if (input.substring(11, input.indexOf("|", 0)).equals(masterGroupName)
-//							|| input.substring(11, input.indexOf("|", 0)).equals(username))
+					new FrameNotif("Private chat has been cancelled");
+				} else if (input.startsWith("CANCELGROUP") && isGroupChat && isMemberGroupChat) {
+					if (input.substring(11, input.indexOf("|", 0)).equals(masterGroupName)
+							|| input.substring(11, input.indexOf("|", 0)).equals(username))
 						docGroup.insertString(docGroup.getLength(),
 								"* " + input.substring(input.indexOf("|", 0) + 1) + " just left your group chat * \n",
 								docGroup.getStyle("notification"));
-//				} else if (input.startsWith("CANCELMASTER") && isGroupChat && isMemberGroupChat
-//						&& input.substring(12).equals(masterGroupName)) {
-//					isMemberGroupChat = false;
-//					isGroupChat = false;
-//					groupChatTextPanel.setText("");
-//					groupTypeArea.setText("");
-//					masterGroupName = null;
-//					openNotiFrame("Group chat is closed by group owner! Goodbye.");
-//					groupChatFrame.dispose();
-//				} else if (input.startsWith("BLOCKEDBEFORE")) {
-//					openNotiFrame(input.substring(13) + " has been blocked before .");
-//				} else if (input.startsWith("BLOCKEDSUCCESS")) {
-//					listBlocked.add(input.substring(14));
-//					openNotiFrame(input.substring(14) + " has been blocked successfully .");
-//				} else if (input.startsWith("BLOCKEDERROR")) {
-//					openNotiFrame("Cannot block Admin.");
-//				} else if (input.startsWith("UNBLOCKSUCCESS")) {
-//					listBlocked.remove(input.substring(14));
-//					openNotiFrame(input.substring(14) + " has been unblocked.");
-//				} else if (input.startsWith("UNBLOCKEDERROR")) {
-//					openNotiFrame(input.substring(14) + " is not blocked yet");
-//				}
-//			} catch (SocketException e) { // if server is down
-////				JOptionPane.showMessageDialog(null, "There was a problem communicating with server. Exitting.", null,
-//						JOptionPane.ERROR_MESSAGE);
-//				System.exit(0);
-//			} catch (BadLocationException e) {
-////				openNotiFrame(e.getMessage());
-//			} catch (Exception e) {
-//				System.err.println(e.getMessage());
-//			} finally {
-////				writeFile();
-//			}
-//		}
+				} else if (input.startsWith("CANCELMASTER") && isGroupChat && isMemberGroupChat
+						&& input.substring(12).equals(masterGroupName)) {
+					isMemberGroupChat = false;
+					isGroupChat = false;
+//					groupChatFrame.getGroupChatTextPanel().setText("");
+//					groupChatFrame.getGroupTypeArea().setText("");
+					masterGroupName = null;
+					new FrameNotif("Group chat is closed by group owner! Goodbye.");
+					groupChatFrame.dispose();
+				} else if (input.startsWith("BLOCKEDBEFORE")) {
+					new FrameNotif(input.substring(13) + " has been blocked before .");
+				} else if (input.startsWith("BLOCKEDSUCCESS")) {
+					listBlocked.add(input.substring(14));
+					new FrameNotif(input.substring(14) + " has been blocked successfully .");
+				} else if (input.startsWith("BLOCKEDERROR")) {
+					new FrameNotif("Cannot block Admin.");
+				} else if (input.startsWith("UNBLOCKSUCCESS")) {
+					listBlocked.remove(input.substring(14));
+					new FrameNotif(input.substring(14) + " has been unblocked.");
+				} else if (input.startsWith("UNBLOCKEDERROR")) {
+					new FrameNotif(input.substring(14) + " is not blocked yet");
+				}
+			} catch (SocketException e) { // if server is down
+				JOptionPane.showMessageDialog(null, "There was a problem communicating with server. Exitting.", null,
+						JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
+			} catch (BadLocationException e) {
+				new FrameNotif(e.getMessage());
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			} finally {
+				writeFile();
+			}
+		}
 	}
 
 	public void printText(JTextPane actionTextPane, String actionText) throws BadLocationException { // actionTextPane:
-		// chat
-		// display
-		// area;
-		// actionText:
-		// the
-		// text
-		// to
-		// be
-		// replaced
 		actionTextPane.setOpaque(false); // to overlap component
 		Pattern pattern = Pattern
 				.compile("<SMILE>|<BSMILE>|<SAD>|<CRY>|<TOUNGE>|<ANGEL>|<DEVIL>|<CONFUSE>|<WINKING>|<SURPRISE>");
@@ -624,6 +635,7 @@ public class Controller  implements ActionListener{
 		}
 		doc.insertString(doc.getLength(), "\n", doc.getStyle("regular"));
 	}
+
 	public ImageIcon emoticon(String path) {
 		URL imgURL = Server.class.getResource(path);
 		if (imgURL != null) {
@@ -632,21 +644,5 @@ public class Controller  implements ActionListener{
 			System.err.println("Couldn't find file path: " + path);
 			return null;
 		}
-	}
-
-	public void openNotiFrame(String noti) {
-		frameNotif = new FrameNotif(null);
-		frameNotif.setLayout(new GridBagLayout());
-		frameNotif.getNotiMess().setText(noti);
-		frameNotif.getNotiMess().setFont(new Font("Serif", Font.BOLD, 17));
-		frameNotif.getNotiMess().setForeground(Color.RED);
-		GridBagConstraints notiFrameConstraint = new GridBagConstraints();
-		notiFrameConstraint.insets = new Insets(10, 10, 10, 10);
-		frameNotif.add(frameNotif.getNotiMess());
-		frameNotif.setBackground(new Color(253, 170, 158));
-		frameNotif.setVisible(true);
-		frameNotif.setLocationRelativeTo(null);
-		frameNotif.setSize(500, 100);
-		frameNotif.setTitle("Notification");
 	}
 }
