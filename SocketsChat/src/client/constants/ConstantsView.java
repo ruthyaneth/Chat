@@ -22,6 +22,7 @@ public class ConstantsView {
 	public static final String LABEL_PASSWORD = "LABEL_PASSWORD";
 	public static final String LABEL_RE_PASSWORD = "LABEL_RE_PASSWORD";
 	public static final String INVITE_GROUP_CHAT_BUTTON = "INVITE_GROUP_CHAT_BUTTON";
+	public static final String T_MENU_FILE_TRANSFER = "T_MENU_FILE_TRANSFER";
 	
 }
 

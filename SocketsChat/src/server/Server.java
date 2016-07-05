@@ -29,15 +29,15 @@ public class Server extends JFrame {
     PrintWriter serverOut = null;
     PrintWriter serverIn = null;
 
-    private static HashSet<PrintWriter> accounts = new HashSet<PrintWriter>();          // a set of all DataOutputStream/ PrintWriter saved in this
-    private static LinkedList<String> listOnl = new LinkedList();                         // all online accounts here
-    private LinkedList<String> usersBlock = new LinkedList();                                     // list of users being blocked
+    private static HashSet<PrintWriter> accounts = new HashSet<PrintWriter>();
+    private static LinkedList<String> listOnl = new LinkedList();                         
+    private LinkedList<String> usersBlock = new LinkedList();                                     
 
     int filePort;
 
     final static boolean shouldFill = true;
     final static boolean shouldWeightX = true;
-    final static boolean RIGHT_TO_LEFT = false;                                    // arrange element from left to right
+    final static boolean RIGHT_TO_LEFT = false;                        
     boolean isPrivate = false;
 
     String privateChatPartner = null;
@@ -47,7 +47,7 @@ public class Server extends JFrame {
     String fileName = null;
     String[] arrayEmotions = {"<SMILE>", "<BSMILE>", "<SAD>", "<CRY>", "<TOUNGE>", "<ANGEL>", "<DEVIL>", "<CONFUSE>", "<WINKING>", "<SURPRISE>"};  //UI
 
-    JFrame privateChatFrame = new JFrame();                                            // private chat frame       
+    JFrame privateChatFrame = new JFrame();                                              
     JFrame notificationFrame = new JFrame();
 
     JPanel blockPanel = new JPanel(new FlowLayout());
@@ -62,7 +62,7 @@ public class Server extends JFrame {
 
     JTextArea privateChatTextArea = new JTextArea();
 
-    JTextField privateChatTextField = new JTextField();                                     // typing area for private chat
+    JTextField privateChatTextField = new JTextField();                                 
     JTextField typeArea = new JTextField();
 
     JButton privateChatCloseButton = new JButton("Close");
@@ -79,13 +79,13 @@ public class Server extends JFrame {
     JMenuItem voiceCall = new JMenuItem("Voice Call", atIcon1);
     JMenuItem videoCall = new JMenuItem("Video Call", atIcon2);
 
-    DefaultListModel model = new DefaultListModel();    // default list of onlines
+    DefaultListModel model = new DefaultListModel();    
 
-    JList online = new JList(model);   // list of onlines
+    JList online = new JList(model);   
 
-    JScrollPane listScrollPane = new JScrollPane(online);  // displaying all online user pane
-    JScrollPane chatScroll = new JScrollPane(chatArea);    // displaying all chats on this chatarea
-    JScrollPane privateChatScroll = new JScrollPane(privateChatTextArea);   // enable scrolling down chat area
+    JScrollPane listScrollPane = new JScrollPane(online); 
+    JScrollPane chatScroll = new JScrollPane(chatArea);    
+    JScrollPane privateChatScroll = new JScrollPane(privateChatTextArea);  
 
     File fileFile = null;
 
@@ -106,7 +106,7 @@ public class Server extends JFrame {
                 {
                     setVisible(true);
                 }
-            };       // add 11 emoticons to panel
+            };      
             listIcon.add(cell);
             cell.setIcon(new ImageIcon("src/" + i + ".png"));
             emotionPanel.add(cell);

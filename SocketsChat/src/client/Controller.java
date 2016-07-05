@@ -49,11 +49,16 @@ import javax.swing.text.StyledDocument;
 
 import client.constants.ConstantsListener;
 import client.constants.ConstantsLogic;
+import client.view.FirstPanel;
+import client.view.FrameChatPrivate;
+import client.view.FrameChatRoom;
 import client.view.FrameLogin;
+import client.view.FrameNotif;
 import client.view.FrameRegister;
 import client.view.GroupChatFrame;
 import client.view.PanelLogin;
 import client.view.PanelRegister;
+import client.view.SignupPanel;
 import client.view.WindowClient;
 import config.HandlerLanguage;
 import server.ReceiveAudio;
@@ -140,9 +145,9 @@ public class Controller implements ActionListener {
 				username = frameLogin.getPanelLogin().getUsernameTextFieldLogin().getText().trim();
 				clientOut.println("CHECKUSER" + username + "|"
 						+ String.valueOf(frameLogin.getPanelLogin().getUsernameTextFieldLogin().getText().trim()).trim());
-				frameLogin.add(signupPanel);
-				frameLogin.getPanelLogin().setVisible(false);
-				signupPanel.setVisible(true);
+//				frameLogin.getPanelLogin().setVisible(false);
+//				signupPanel.setVisible(true);
+				new FrameChatRoom();
 			}
 			break;
 		case ConstantsListener.A_REGISTER_BUTTON:
@@ -154,7 +159,7 @@ public class Controller implements ActionListener {
 					String.valueOf(frameRegister.getPanelRegister().getPasswordRetypeRegister().getPassword()))) {
 				if (frameRegister.getPanelRegister().getUsernameRegister().getText().equals("") || String
 						.valueOf(frameRegister.getPanelRegister().getPasswordRegister().getPassword()).equals("")) {
-					new FrameNotif("Fields are empty .");
+					new FrameNotif("Fields are empty.");
 					frameRegister.getPanelRegister().getUsernameRegister().setText("");
 					frameRegister.getPanelRegister().getPasswordRegister().setText("");
 					frameRegister.getPanelRegister().getPasswordRetypeRegister().setText("");
@@ -544,8 +549,8 @@ public class Controller implements ActionListener {
 						&& input.substring(12).equals(masterGroupName)) {
 					isMemberGroupChat = false;
 					isGroupChat = false;
-//					groupChatFrame.getGroupChatTextPanel().setText("");
-//					groupChatFrame.getGroupTypeArea().setText("");
+					groupChatFrame.getGroupChatTextPanel().setText("");
+					groupChatFrame.getGroupTypeArea().setText("");
 					masterGroupName = null;
 					new FrameNotif("Group chat is closed by group owner! Goodbye.");
 					groupChatFrame.dispose();
@@ -562,7 +567,7 @@ public class Controller implements ActionListener {
 				} else if (input.startsWith("UNBLOCKEDERROR")) {
 					new FrameNotif(input.substring(14) + " is not blocked yet");
 				}
-			} catch (SocketException e) { // if server is down
+			} catch (SocketException e) { 
 				JOptionPane.showMessageDialog(null, "There was a problem communicating with server. Exitting.", null,
 						JOptionPane.ERROR_MESSAGE);
 				System.exit(0);
@@ -576,19 +581,14 @@ public class Controller implements ActionListener {
 		}
 	}
 
-	public void printText(JTextPane actionTextPane, String actionText) throws BadLocationException { // actionTextPane:
-		actionTextPane.setOpaque(false); // to overlap component
+	public void printText(JTextPane actionTextPane, String actionText) throws BadLocationException { 
+		actionTextPane.setOpaque(false); 
 		Pattern pattern = Pattern
 				.compile("<SMILE>|<BSMILE>|<SAD>|<CRY>|<TOUNGE>|<ANGEL>|<DEVIL>|<CONFUSE>|<WINKING>|<SURPRISE>");
-		Matcher matcher = pattern.matcher(actionText); // check if JTextPane
-		// actionTextPane
-		// (((chat display area)
-		// match the pattern
+		Matcher matcher = pattern.matcher(actionText); 
 		Style s = doc.addStyle("icon", regular);
 		StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
-		int previousMatch = 0; // flag. to flag index where one emoticon has
-		// been replaced by ImageIcon
-		while (matcher.find()) { // found matched text
+		int previousMatch = 0; 		while (matcher.find()) { 
 			int startIndex = matcher.start();
 			int endIndex = matcher.end();
 			String group = matcher.group();
@@ -629,8 +629,8 @@ public class Controller implements ActionListener {
 			}
 			previousMatch = endIndex;
 		}
-		String subText = actionText.substring(previousMatch); // cut a whole
-		if (!subText.isEmpty()) { // display message in regular style if no
+		String subText = actionText.substring(previousMatch); 
+		if (!subText.isEmpty()) { 
 			doc.insertString(doc.getLength(), subText, doc.getStyle("regular"));
 		}
 		doc.insertString(doc.getLength(), "\n", doc.getStyle("regular"));

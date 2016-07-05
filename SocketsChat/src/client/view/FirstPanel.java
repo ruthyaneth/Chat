@@ -1,4 +1,4 @@
-package client;
+package client.view;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
