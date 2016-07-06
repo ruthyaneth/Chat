@@ -1,1 +1,13 @@
 * Your chat room has been created successfully * 
+* jose just left our chat room * 
+* Ruth just joined our chat room * 
+Ruth: bvbvbvb
+Ruth: hkjhjhjh
+Admin: hola
+* Sofia just joined our chat room * 
+Sofia: Hola Ruth soy sofia
+* Willi just joined our chat room * 
+Willi: quienes puedden ver esto
+Sofia: bjbk
+* Sofia just left our chat room * 
+* Willi just left our chat room * 

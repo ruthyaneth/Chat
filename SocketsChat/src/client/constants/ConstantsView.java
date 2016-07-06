@@ -23,6 +23,9 @@ public class ConstantsView {
 	public static final String LABEL_RE_PASSWORD = "LABEL_RE_PASSWORD";
 	public static final String INVITE_GROUP_CHAT_BUTTON = "INVITE_GROUP_CHAT_BUTTON";
 	public static final String T_MENU_FILE_TRANSFER = "T_MENU_FILE_TRANSFER";
-	
+	public static final String T_MENU_VOICE_CALL = "T_MENU_VOICE_CALL";
+	public static final String T_MENU_GROUP_CHAT = "T_MENU_GROUP_CHAT";
+	public static final String LABEL_LIST_USER_ONLINE = "LABEL_LIST_USER_ONLINE";
+	public static final String TITLE_FRAME_CHAT_ROOM = "TITLE_FRAME_CHAT_ROOM";
 }
 

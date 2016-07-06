@@ -49,7 +49,7 @@ import javax.swing.text.StyledDocument;
 
 import client.constants.ConstantsListener;
 import client.constants.ConstantsLogic;
-import client.view.FirstPanel;
+import client.view.PanelStatusInfo;
 import client.view.FrameChatPrivate;
 import client.view.FrameChatRoom;
 import client.view.FrameLogin;
@@ -69,7 +69,7 @@ public class Controller implements ActionListener {
 	private HandlerLanguage handlerLanguage;
 	private WindowClient windowClient;
 	private FrameLogin frameLogin;
-	private FirstPanel firstPanel;
+	private PanelStatusInfo firstPanel;
 	private SignupPanel signupPanel;
 	private FrameChatPrivate frameChatPrivate;
 	private GroupChatFrame groupChatFrame;
@@ -147,7 +147,7 @@ public class Controller implements ActionListener {
 						+ String.valueOf(frameLogin.getPanelLogin().getUsernameTextFieldLogin().getText().trim()).trim());
 //				frameLogin.getPanelLogin().setVisible(false);
 //				signupPanel.setVisible(true);
-				new FrameChatRoom();
+				new FrameChatRoom(this,username);
 			}
 			break;
 		case ConstantsListener.A_REGISTER_BUTTON:
@@ -178,6 +178,10 @@ public class Controller implements ActionListener {
 			break;
 		case ConstantsListener.A_BUTTON_BACK:
 			frameRegister.setVisible(false);
+			break;
+		case ConstantsListener.A_MENU_FILE_TRANSFER: 
+			System.out.println("esta escuchando");
+			new FrameNotif("Holeeeeeeeeeeeeeeeeeee");
 			break;
 		}
 	}

@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import client.Controller;
+import client.constants.ConstantsListener;
 import client.constants.ConstantsView;
 import config.HandlerLanguage;
 import config.HandlerProperties;
@@ -15,24 +17,45 @@ public class MenuChatRoom extends JMenuBar {
 	private JMenuItem fileTransfer;
 	private JMenuItem voiceCall;
 	private JMenuItem chatGroup;
-	
-	public MenuChatRoom() {
-	super();
-	addMenuFileTransfer();
-	voiceCall = new JMenuItem("Voice Call");
-	chatGroup = new JMenuItem("Create Group Chat");
+	private Controller controller;
+
+	public MenuChatRoom(Controller controller) {
+		super();
+		this.controller = controller;
+		addMenuFileTransfer();
+		addMenuVoiceCall();
+		addMenuChatGoup();
+		try {
+			changeLenguage();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	private void addMenuFileTransfer(){
-	fileTransfer = new JMenuItem();
-	this.add(fileTransfer);
-		
+
+	private void addMenuFileTransfer() {
+		fileTransfer = new JMenuItem();
+		fileTransfer.addActionListener(controller);
+		fileTransfer.setActionCommand(ConstantsListener.A_MENU_FILE_TRANSFER);
+		this.add(fileTransfer);
 	}
+
+	private void addMenuVoiceCall() {
+		voiceCall = new JMenuItem();
+		this.add(voiceCall);
+	}
+
+	private void addMenuChatGoup() {
+		chatGroup = new JMenuItem();
+		this.add(chatGroup);
+	}
+
 	public void changeLenguage() throws IOException {
 
 		HandlerProperties handlerProperties = new HandlerProperties(HandlerLanguage.language);
 		handlerProperties.load();
 		this.fileTransfer.setText(handlerProperties.getProperty(ConstantsView.T_MENU_FILE_TRANSFER));
+		this.voiceCall.setText(handlerProperties.getProperty(ConstantsView.T_MENU_VOICE_CALL));
+		this.chatGroup.setText(handlerProperties.getProperty(ConstantsView.T_MENU_GROUP_CHAT));
 	}
 
 }
