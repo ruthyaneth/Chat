@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import server.Constants.ConstantsView;
+import server.logic.Server;
 
 /**
  * UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA
@@ -24,6 +25,7 @@ public class WindowServer extends JFrame {
 	private PanelAdmi panelAdmi;
 	private PanelRoom panelRoom;
 	private PanelButton panelButton;
+	private Server server;
 	//------Builder-------
 	
 	public WindowServer() {
@@ -42,10 +44,11 @@ public class WindowServer extends JFrame {
 	public void initThis(){
 		
 		this.setTitle(ConstantsView.DEFAULT_NAME);
-		this.setSize(ConstantsView.DEFAULT_SIZE, ConstantsView.DEFAULT_SIZE);
+		this.setSize(ConstantsView.DEFAULT_SIZE_WIDTH, ConstantsView.DEFAULT_SIZE_HIGTH);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.server = new Server();
 	}
 	
 	public void intiPanelAdmi(){
@@ -58,12 +61,14 @@ public class WindowServer extends JFrame {
 	public void intiPanelRoom(){
 		
 		this.panelRoom = new PanelRoom();
+		this.panelRoom.setBorder(BorderFactory.createTitledBorder(ConstantsView.DEFAULT_BORDER_ROOM));
 		this.add(panelRoom, BorderLayout.EAST);
 	}
 	
 	public void initPanelButton(){
 		
 		this.panelButton = new PanelButton();
+		this.panelButton.setBorder(BorderFactory.createTitledBorder(ConstantsView.DEFAULT_BORDER_OPTION));
 		this.add(panelButton,BorderLayout.SOUTH);
 	}
 }

@@ -1,9 +1,13 @@
 package server.view;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 /**
  * UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA
@@ -18,7 +22,8 @@ public class PanelRoom extends JPanel{
 
 	//-------Atributtes--------
 
-	private JTextField txWrite;
+	private JTextArea txArea;
+	private JScrollPane scrollPane;
 
 	//------Builder------
 	
@@ -33,13 +38,17 @@ public class PanelRoom extends JPanel{
 	 intiTx();
 	}
 	public void initThis(){
-		this.setBackground(Color.blue);
+	
 	}
 	
 	
 	public void intiTx(){
-		this.txWrite = new JTextField();
-		this.add(txWrite);
+		
+		this.txArea = new JTextArea(24,32);
+		this.scrollPane = new JScrollPane(txArea);
+		this.add(scrollPane);
+		
+		
 	}
 
 }

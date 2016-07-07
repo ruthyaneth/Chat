@@ -13,7 +13,11 @@ public class ConstantsView {
 
 	//-------Atributtes.--------
 	
-	public final  static int  DEFAULT_SIZE = 400; 
+	public final  static int  DEFAULT_SIZE_WIDTH = 550;
+	public final  static int  DEFAULT_SIZE_HIGTH = 500;
 	public final static String DEFAULT_NAME = "Administrador Chat" ;
-	public final static String DEFAULT_BORDER_ADMI = "Conectados";
+	public final static String DEFAULT_BORDER_ADMI = "Usuarios en Linea";
+	public final static String DEFAULT_BORDER_OPTION = "Opiones";
+	public final static String DEFAULT_BORDER_ROOM = "Sala de chat" ;
+	public final static String DEFAULT_NAME_BUTTON = "Enviar";
 }

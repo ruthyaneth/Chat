@@ -4,7 +4,12 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+
+import server.Constants.ConstantsView;
 
 /**
  * UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA
@@ -19,7 +24,8 @@ public class PanelAdmi  extends JPanel{
 	
 	//------Atributtes------
 	
-	private JTextField txClientCnnect;
+	private JTextArea txClientCnnect;
+	private JScrollPane scrollPane;
 	
 	//------Builder-------
 	
@@ -35,14 +41,15 @@ public class PanelAdmi  extends JPanel{
 	}
 	
 	public void initThis(){
-		this.setBackground(Color.green);
+	
 	}
 	
 	public void initTx(){
 		
-		this.txClientCnnect = new JTextField("Prueba");
-		this.setBorder( BorderFactory.createTitledBorder("Prueba1"));
-		this.add(txClientCnnect);
+		this.txClientCnnect = new JTextArea(24,12);
+		this.setBorder( BorderFactory.createTitledBorder(ConstantsView.DEFAULT_BORDER_ROOM));
+		this.scrollPane = new JScrollPane(txClientCnnect);
+		this.add(scrollPane);
 	}
 	
 

@@ -42,10 +42,10 @@ public class Server extends JFrame {
     String fileName = null;
     String[] arrayEmotions = {"<SMILE>", "<BSMILE>", "<SAD>", "<CRY>", "<TOUNGE>", "<ANGEL>", "<DEVIL>", "<CONFUSE>", "<WINKING>", "<SURPRISE>"};  //UI
 
-//    JFrame privateChatFrame = new JFrame();                                              
-//    JFrame notificationFrame = new JFrame();
+    JFrame privateChatFrame = new JFrame();                                              
+    JFrame notificationFrame = new JFrame();
 
-//    JPanel blockPanel = new JPanel(new FlowLayout());
+    JPanel blockPanel = new JPanel(new FlowLayout());
 
     JLabel privateChatLabel = new JLabel("Private Chat");
     JLabel labelUser = new JLabel();
@@ -279,27 +279,27 @@ public class Server extends JFrame {
         notiMess.setForeground(Color.RED);
         GridBagConstraints notiFrameConstraint = new GridBagConstraints();
         notiFrameConstraint.insets = new Insets(10, 10, 10, 10);
-//        notificationFrame.add(notiMess);
-//        notificationFrame.setBackground(new Color(253, 170, 158));
-//        notificationFrame.setVisible(true);
-//        notificationFrame.setLocationRelativeTo(null);
-//        notificationFrame.setSize(500, 100);
-//        notificationFrame.setTitle("Notification");
-//        notificationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        notificationFrame.add(notiMess);
+        notificationFrame.setBackground(new Color(253, 170, 158));
+        notificationFrame.setVisible(true);
+        notificationFrame.setLocationRelativeTo(null);
+        notificationFrame.setSize(500, 100);
+        notificationFrame.setTitle("Notification");
+        notificationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     public void privateChatFrame() {     //UI: Private Chat Window
-//        privateChatFrame.setLayout(new BorderLayout());
-//        privateChatFrame.add(privateChatLabel,BorderLayout.NORTH);
-//        privateChatTextArea.setEditable(false);
-//        privateChatFrame.add(privateChatScroll,BorderLayout.CENTER);
-//        JPanel privateChatPanel = new JPanel(new BorderLayout());
-//        privateChatFrame.add(privateChatPanel,BorderLayout.SOUTH);
-//        privateChatPanel.add(privateChatTextField,BorderLayout.CENTER);
-//        privateChatPanel.add(privateChatCloseButton,BorderLayout.SOUTH);
-//        privateChatFrame.setVisible(false);
-//        privateChatFrame.setSize(300, 200);
-//        privateChatFrame.setResizable(false);
-//        privateChatFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        privateChatFrame.setLayout(new BorderLayout());
+        privateChatFrame.add(privateChatLabel,BorderLayout.NORTH);
+        privateChatTextArea.setEditable(false);
+        privateChatFrame.add(privateChatScroll,BorderLayout.CENTER);
+        JPanel privateChatPanel = new JPanel(new BorderLayout());
+        privateChatFrame.add(privateChatPanel,BorderLayout.SOUTH);
+        privateChatPanel.add(privateChatTextField,BorderLayout.CENTER);
+        privateChatPanel.add(privateChatCloseButton,BorderLayout.SOUTH);
+        privateChatFrame.setVisible(false);
+        privateChatFrame.setSize(300, 200);
+        privateChatFrame.setResizable(false);
+        privateChatFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
 
     public void printText(JTextPane actionTextPane, String actionText) throws BadLocationException {
@@ -407,7 +407,7 @@ public class Server extends JFrame {
                 privateChatTextField.setText("");
                 isPrivate = false;
                 privateChatTextArea.setText("");
-//                privateChatFrame.dispose();
+               privateChatFrame.dispose();
             }
             if (e.getSource() == fileTransfer) {
                 final JFrame inputframe = new JFrame();
@@ -765,7 +765,7 @@ public class Server extends JFrame {
         File file = new File("account.txt");
         LinkedList<String> listBlocked = new LinkedList();
 
-        public Client(Socket client, Server server) {
+        public  Client(Socket client, Server server) {
             this.client = client;
             this.server = server;
         }
