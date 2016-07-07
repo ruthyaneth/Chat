@@ -61,7 +61,7 @@ import client.view.PanelRegister;
 import client.view.SignupPanel;
 import client.view.WindowClient;
 import config.HandlerLanguage;
-import server.ReceiveAudio;
+//import server.ReceiveAudio;
 import server.Server;
 
 public class Controller implements ActionListener {
@@ -378,8 +378,8 @@ public class Controller implements ActionListener {
 						int bytesRead = 0;
 						byte[] soundData = new byte[1];
 
-						Thread inThread = new Thread(new ReceiveAudio(conn));
-						inThread.start();
+				//		Thread inThread = new Thread(new ReceiveAudio(conn));
+				//		inThread.start();
 						while (bytesRead != -1) {
 							bytesRead = microphone.read(soundData, 0, soundData.length);
 							if (!conn.isClosed()) {

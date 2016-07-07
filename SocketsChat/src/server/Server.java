@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package server;
 
 
@@ -47,10 +42,10 @@ public class Server extends JFrame {
     String fileName = null;
     String[] arrayEmotions = {"<SMILE>", "<BSMILE>", "<SAD>", "<CRY>", "<TOUNGE>", "<ANGEL>", "<DEVIL>", "<CONFUSE>", "<WINKING>", "<SURPRISE>"};  //UI
 
-    JFrame privateChatFrame = new JFrame();                                              
-    JFrame notificationFrame = new JFrame();
+//    JFrame privateChatFrame = new JFrame();                                              
+//    JFrame notificationFrame = new JFrame();
 
-    JPanel blockPanel = new JPanel(new FlowLayout());
+//    JPanel blockPanel = new JPanel(new FlowLayout());
 
     JLabel privateChatLabel = new JLabel("Private Chat");
     JLabel labelUser = new JLabel();
@@ -156,7 +151,7 @@ public class Server extends JFrame {
 
         this.getContentPane().setBackground(new Color(228, 245, 237));
         emotionPanel.setBackground(new Color(228, 245, 237));
-        blockPanel.setBackground(new Color(228, 245, 237));
+    //    blockPanel.setBackground(new Color(228, 245, 237));
 
         privateChatFrame();
 
@@ -214,10 +209,10 @@ public class Server extends JFrame {
         mainFrameConstraint.gridx = 0;
         mainFrameConstraint.gridy = 3;
         mainFrameConstraint.insets = new Insets(3, 3, 3, 3);
-        this.add(blockPanel, mainFrameConstraint);
-
-        blockPanel.add(blockUserButton);
-        blockPanel.add(unBlockUserButton);
+//        this.add(blockPanel, mainFrameConstraint);
+//
+//        blockPanel.add(blockUserButton);
+//        blockPanel.add(unBlockUserButton);
 
         mainFrameConstraint.fill = GridBagConstraints.HORIZONTAL;
         mainFrameConstraint.ipady = 30;
@@ -278,33 +273,33 @@ public class Server extends JFrame {
     }
 
     public void openNotiFrame(String noti) {
-        notificationFrame.setLayout(new GridBagLayout());
+     //   notificationFrame.setLayout(new GridBagLayout());
         notiMess.setText(noti);
         notiMess.setFont(new Font("Serif", Font.BOLD, 17));
         notiMess.setForeground(Color.RED);
         GridBagConstraints notiFrameConstraint = new GridBagConstraints();
         notiFrameConstraint.insets = new Insets(10, 10, 10, 10);
-        notificationFrame.add(notiMess);
-        notificationFrame.setBackground(new Color(253, 170, 158));
-        notificationFrame.setVisible(true);
-        notificationFrame.setLocationRelativeTo(null);
-        notificationFrame.setSize(500, 100);
-        notificationFrame.setTitle("Notification");
-        notificationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//        notificationFrame.add(notiMess);
+//        notificationFrame.setBackground(new Color(253, 170, 158));
+//        notificationFrame.setVisible(true);
+//        notificationFrame.setLocationRelativeTo(null);
+//        notificationFrame.setSize(500, 100);
+//        notificationFrame.setTitle("Notification");
+//        notificationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     public void privateChatFrame() {     //UI: Private Chat Window
-        privateChatFrame.setLayout(new BorderLayout());
-        privateChatFrame.add(privateChatLabel,BorderLayout.NORTH);
-        privateChatTextArea.setEditable(false);
-        privateChatFrame.add(privateChatScroll,BorderLayout.CENTER);
-        JPanel privateChatPanel = new JPanel(new BorderLayout());
-        privateChatFrame.add(privateChatPanel,BorderLayout.SOUTH);
-        privateChatPanel.add(privateChatTextField,BorderLayout.CENTER);
-        privateChatPanel.add(privateChatCloseButton,BorderLayout.SOUTH);
-        privateChatFrame.setVisible(false);
-        privateChatFrame.setSize(300, 200);
-        privateChatFrame.setResizable(false);
-        privateChatFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+//        privateChatFrame.setLayout(new BorderLayout());
+//        privateChatFrame.add(privateChatLabel,BorderLayout.NORTH);
+//        privateChatTextArea.setEditable(false);
+//        privateChatFrame.add(privateChatScroll,BorderLayout.CENTER);
+//        JPanel privateChatPanel = new JPanel(new BorderLayout());
+//        privateChatFrame.add(privateChatPanel,BorderLayout.SOUTH);
+//        privateChatPanel.add(privateChatTextField,BorderLayout.CENTER);
+//        privateChatPanel.add(privateChatCloseButton,BorderLayout.SOUTH);
+//        privateChatFrame.setVisible(false);
+//        privateChatFrame.setSize(300, 200);
+//        privateChatFrame.setResizable(false);
+//        privateChatFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
 
     public void printText(JTextPane actionTextPane, String actionText) throws BadLocationException {
@@ -412,7 +407,7 @@ public class Server extends JFrame {
                 privateChatTextField.setText("");
                 isPrivate = false;
                 privateChatTextArea.setText("");
-                privateChatFrame.dispose();
+//                privateChatFrame.dispose();
             }
             if (e.getSource() == fileTransfer) {
                 final JFrame inputframe = new JFrame();
@@ -483,12 +478,12 @@ public class Server extends JFrame {
             if (me.getClickCount() == 2 && me.getSource() == online && !nickName.equals(online.getSelectedValue()) && !isPrivate) {
                 isPrivate = true;
                 privateChatPartner = (String) online.getSelectedValue();
-                privateChatFrame.setTitle("Nickname:" + nickName);
+//                privateChatFrame.setTitle("Nickname:" + nickName);
                 privateChatLabel.setText("Private chat with " + privateChatPartner);
                 for (PrintWriter outPrint : accounts) {
                     outPrint.println("PRIVATE" + privateChatPartner + "|" + nickName + ",Hey what's up! It's me - ");
                 }
-                privateChatFrame.setVisible(true);
+//                privateChatFrame.setVisible(true);
             }
             if (me.getSource() == blockUserButton) {
                 LinkedList<String> account = new LinkedList<String>();
@@ -692,8 +687,8 @@ public class Server extends JFrame {
                                 byte[] soundData = new byte[1];
 
                                 // Reading data in
-                                Thread inThread = new Thread(new ReceiveAudio(conn));
-                                inThread.start();
+  //                              Thread inThread = new Thread(new ReceiveAudio(conn));
+  //                              inThread.start();
                                 // Sending data out
                                 while (bytesRead != -1) {
                                     bytesRead = microphone.read(soundData, 0, soundData.length);
@@ -928,8 +923,8 @@ public class Server extends JFrame {
                                 byte[] soundData = new byte[1];
 
                                 // Reading data in
-                                Thread inThread = new Thread(new ReceiveAudio(conn));
-                                inThread.start();
+ //                               Thread inThread = new Thread(new ReceiveAudio(conn));
+   //                             inThread.start();
                                 // Sending data out
                                 while (bytesRead != -1) {
                                     bytesRead = microphone.read(soundData, 0, soundData.length);
@@ -1093,7 +1088,7 @@ public class Server extends JFrame {
                             privateChatTextField.setText("");
                             privateChatPartner = null;
                             privateChatTextArea.setText("");
-                            privateChatFrame.dispose();
+//                            privateChatFrame.dispose();
                             openNotiFrame("Private chat has been cancelled.");
                         } else {
                             for (PrintWriter outPrint : accounts) {
@@ -1186,9 +1181,9 @@ public class Server extends JFrame {
 
                                 if (!isPrivate && partner.equals(nickName)) {
                                     privateChatLabel.setText("Private chat with " + username);
-                                    privateChatFrame.setTitle(nickName);
-                                    privateChatFrame.setVisible(true);
-                                    privateChatPartner = username;
+//                                    privateChatFrame.setTitle(nickName);
+//                                    privateChatFrame.setVisible(true);
+                                   privateChatPartner = username;
                                     if (flag3 == 0) {
                                         privateChatTextArea.append(username + ": " + content + "\n");
                                         flag3++;
