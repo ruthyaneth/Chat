@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import server.logic.Server;
 
 /**
  * UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA
@@ -21,7 +20,7 @@ public class Client implements Runnable {
 	
 	//------Atributtes-------
 	private Socket socket;
-	private Server server;
+//	private Server server;
 	private PrintWriter out;
 	private String name;
 	private String lastNmae;
@@ -30,11 +29,11 @@ public class Client implements Runnable {
 	
 	//------Builder--------
 	
-	public Client(Socket socket , Server server) {
-	
-		this.server = server;
-		this.socket = socket;
-	}
+//	public Client(Socket socket , Server server) {
+//	
+//		this.server = server;
+//		this.socket = socket;
+//	}
 
 	
 	//-------Methods--------
@@ -52,11 +51,11 @@ public class Client implements Runnable {
 		
 	}
 	
-	public Client(Server server , Socket socket){
-		
-		this.server = server;
-		this.socket = socket;
-	}
-	
+//	public Client(Server server , Socket socket){
+//		
+//		this.server = server;
+//		this.socket = socket;
+//	}
+//	
 
 }
