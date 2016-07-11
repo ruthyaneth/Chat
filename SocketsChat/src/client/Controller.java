@@ -52,9 +52,11 @@ import client.constants.ConstantsLogic;
 import client.view.PanelStatusInfo;
 import client.view.FrameChatPrivate;
 import client.view.FrameChatRoom;
+import client.view.FrameFileTransfer;
 import client.view.FrameLogin;
 import client.view.FrameNotif;
 import client.view.FrameRegister;
+import client.view.FrameVoiceCall;
 import client.view.GroupChatFrame;
 import client.view.PanelLogin;
 import client.view.PanelRegister;
@@ -77,6 +79,7 @@ public class Controller implements ActionListener {
 	private JTextArea privateTextArea = new JTextArea();
 	private JTextField privateChatTextField = new JTextField();
 	private FrameRegister frameRegister;
+	private FrameChatRoom frameChatRoom;
 
 	boolean isPrivateChat = false;
 	boolean isGroupChat = false;
@@ -93,22 +96,26 @@ public class Controller implements ActionListener {
 	PrintWriter clientOut = null; // outToServer
 	BufferedReader clientIn = null;
 
-	StyledDocument doc = null;
-	Style def = null;
-	Style notification = null;
-	StyledDocument docGroup = null;
-	Style defGroup = null;
-	Style notificationGroup = null;
-	Style regular = null;
+//	StyledDocument doc = null;
+//	Style def = null;
+//	Style notification = null;
+//	StyledDocument docGroup = null;
+//	Style defGroup = null;
+//	Style notificationGroup = null;
+//	Style regular = null;
 
 	DefaultListModel model = new DefaultListModel();
 	JList online = new JList(model);
 	File fileFile = null;
 
+	String ip;
+	int filePort;
 	public Controller() {
 		loadConfiguration();
 		frameRegister = new FrameRegister(this);
 		signupPanel = new SignupPanel();
+		frameChatRoom = new FrameChatRoom(this, userName);
+//		docGroup = groupChatTextPanel.getStyledDocument();
 	}
 
 	public void loadConfiguration() {
@@ -180,9 +187,28 @@ public class Controller implements ActionListener {
 			frameRegister.setVisible(false);
 			break;
 		case ConstantsListener.A_MENU_FILE_TRANSFER: 
-			System.out.println("esta escuchando");
-			new FrameNotif("Holeeeeeeeeeeeeeeeeeee");
+			FrameFileTransfer frameFileTransfer = new FrameFileTransfer(userName, frameChatRoom.getJMenuItemFileTransfer(), clientOut, ip, filePort);
 			break;
+		case ConstantsListener.A_MENU_VOICE_CALL:
+			FrameVoiceCall frameVoiceCall = new FrameVoiceCall(userName, clientOut);
+			break;
+		case ConstantsListener.A_MENU_CHAT_GROUP:
+			GroupChatFrame groupChatFrame = new GroupChatFrame();
+			groupChatFrame.setVisible(true);
+			if (!isGroupChat) {
+				groupChatFrame.getWelcomeGroupChatLabel().setText("Group chat of " + username);
+				groupChatFrame.getGroupChatPanel().add(groupChatFrame.getInviteGroupChatButton());
+				groupChatFrame.getGroupChatPanel().revalidate();
+				groupChatFrame.revalidate();
+				isMasterGroupChat = true;
+				isGroupChat = true;
+//				try {
+////					docGroup.insertString(docGroup.getLength(), "* Your group has been created * \n",
+////							docGroup.getStyle("notification"));
+//				} catch (BadLocationException e1) {
+//					e1.printStackTrace();
+//				}
+			}
 		}
 	}
 
@@ -218,8 +244,8 @@ public class Controller implements ActionListener {
 						JOptionPane.showMessageDialog(null, "You has been blocked by admin!");
 						System.exit(0);
 					} else {
-						doc.insertString(doc.getLength(), "* " + input.substring(12) + " just left our chat room * \n",
-								doc.getStyle("notification"));
+//						doc.insertString(doc.getLength(), "* " + input.substring(12) + " just left our chat room * \n",
+//								doc.getStyle("notification"));
 						clientOut.println("REFRESHONL");
 						model.clear();
 					}
@@ -260,8 +286,8 @@ public class Controller implements ActionListener {
 								+ input.substring(input.indexOf("|", 0) + 1));
 					}
 				} else if (input.startsWith("CONNECTED")) {
-					doc.insertString(doc.getLength(), "* " + input.substring(9) + " just joined our chat room * \n",
-							doc.getStyle("notification"));
+//					doc.insertString(doc.getLength(), "* " + input.substring(9) + " just joined our chat room * \n",
+//							doc.getStyle("notification"));
 					clientOut.println("REFRESHONL");
 					model.clear();
 				} else if (input.startsWith("ONLINE")) {
@@ -278,9 +304,9 @@ public class Controller implements ActionListener {
 					if (!model.contains(usernameTextField)) {
 						model.addElement(usernameTextField);
 					}
-					doc.insertString(doc.getLength(),
-							"* " + usernameTextField + " just update his status to " + status + " *\n",
-							doc.getStyle("notification"));
+//					doc.insertString(doc.getLength(),
+//							"* " + usernameTextField + " just update his status to " + status + " *\n",
+//							doc.getStyle("notification"));
 				} else if (input.startsWith("INVISIBLE")) {
 					model.removeElement(input.substring(9));
 				} else if (input.startsWith("PRIVATE")) {
@@ -415,8 +441,8 @@ public class Controller implements ActionListener {
 					int port = Integer.parseInt(onPort);
 					System.out.println(input);
 					if (sender.equals(userName)) {
-						doc.insertString(doc.getLength(), "* File transfer to " + reciever + " begin * \n",
-								doc.getStyle("notification"));
+//						doc.insertString(doc.getLength(), "* File transfer to " + reciever + " begin * \n",
+//								doc.getStyle("notification"));
 						try {
 							clientOut.println("BEGINFILE" + input.substring(10));
 							Socket client = fileSocket.accept();
@@ -433,8 +459,8 @@ public class Controller implements ActionListener {
 							bis.close();
 							client.close();
 							fileSocket.close();
-							doc.insertString(doc.getLength(), "* File transfer to " + reciever + " completed * \n",
-									doc.getStyle("notification"));
+//							doc.insertString(doc.getLength(), "* File transfer to " + reciever + " completed * \n",
+//									doc.getStyle("notification"));
 						} catch (Exception e) {
 							new FrameNotif(e.getMessage());
 						}
@@ -467,8 +493,8 @@ public class Controller implements ActionListener {
 					System.out.println("file request: " + filepath);
 					if (reciever.equals(userName)) {
 						if (filepath != null) {
-							doc.insertString(doc.getLength(), "* File transfer between you and server begin * \n",
-									doc.getStyle("notification"));
+//							doc.insertString(doc.getLength(), "* File transfer between you and server begin * \n",
+//									doc.getStyle("notification"));
 							try {
 								Socket client1 = new Socket(remoteip, port);
 								System.out.println("requesting reliable socket");
@@ -490,9 +516,9 @@ public class Controller implements ActionListener {
 								bos.flush();
 								bos.close();
 								client1.close();
-								doc.insertString(doc.getLength(),
-										"* File transfer between you and server completed * \n",
-										doc.getStyle("notification"));
+//								doc.insertString(doc.getLength(),
+//										"* File transfer between you and server completed * \n",
+//										doc.getStyle("notification"));
 							} catch (Exception e1) {
 								System.err.println(e1.getMessage());
 							}
@@ -525,9 +551,9 @@ public class Controller implements ActionListener {
 					}
 				} else if (input.startsWith("CHATMES") && isGroupChat) {
 					if (input.substring(7, input.indexOf("|", 0)).equals(masterGroupName)
-							|| input.substring(7, input.indexOf("|", 0)).equals(userName))
-						docGroup.insertString(docGroup.getLength(), input.substring(input.indexOf("|", 0) + 1) + "\n",
-								docGroup.getStyle("regular"));
+							|| input.substring(7, input.indexOf("|", 0)).equals(userName));
+//						docGroup.insertString(docGroup.getLength(), input.substring(input.indexOf("|", 0) + 1) + "\n",
+//								docGroup.getStyle("regular"));
 				} else if (input.startsWith("REJECTINVITE") && isMasterGroupChat) {
 					new FrameNotif(input.substring(12) + " decline to join.");
 				} else if (input.startsWith("NOJOIN") && isMasterGroupChat) {
@@ -545,10 +571,10 @@ public class Controller implements ActionListener {
 					new FrameNotif("Private chat has been cancelled");
 				} else if (input.startsWith("CANCELGROUP") && isGroupChat && isMemberGroupChat) {
 					if (input.substring(11, input.indexOf("|", 0)).equals(masterGroupName)
-							|| input.substring(11, input.indexOf("|", 0)).equals(username))
-						docGroup.insertString(docGroup.getLength(),
-								"* " + input.substring(input.indexOf("|", 0) + 1) + " just left your group chat * \n",
-								docGroup.getStyle("notification"));
+							|| input.substring(11, input.indexOf("|", 0)).equals(username));
+//						docGroup.insertString(docGroup.getLength(),
+//								"* " + input.substring(input.indexOf("|", 0) + 1) + " just left your group chat * \n",
+//								docGroup.getStyle("notification"));
 				} else if (input.startsWith("CANCELMASTER") && isGroupChat && isMemberGroupChat
 						&& input.substring(12).equals(masterGroupName)) {
 					isMemberGroupChat = false;
@@ -590,54 +616,54 @@ public class Controller implements ActionListener {
 		Pattern pattern = Pattern
 				.compile("<SMILE>|<BSMILE>|<SAD>|<CRY>|<TOUNGE>|<ANGEL>|<DEVIL>|<CONFUSE>|<WINKING>|<SURPRISE>");
 		Matcher matcher = pattern.matcher(actionText); 
-		Style s = doc.addStyle("icon", regular);
-		StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
+//		Style s = doc.addStyle("icon", regular);
+//		StyleConstants.setAlignment(s, StyleConstants.ALIGN_CENTER);
 		int previousMatch = 0; 		while (matcher.find()) { 
 			int startIndex = matcher.start();
 			int endIndex = matcher.end();
 			String group = matcher.group();
 			String subText = actionText.substring(previousMatch, startIndex);
 			if (!subText.isEmpty()) {
-				doc.insertString(doc.getLength(), subText, doc.getStyle("regular"));
+//				doc.insertString(doc.getLength(), subText, doc.getStyle("regular"));
 			}
 			if (group.equals("<SMILE>")) {
-				StyleConstants.setIcon(s, emoticon("../1.png"));
-				doc.insertString(doc.getLength(), "<SMILE>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../1.png"));
+//				doc.insertString(doc.getLength(), "<SMILE>", doc.getStyle("icon"));
 			} else if (group.equals("<SAD>")) {
-				StyleConstants.setIcon(s, emoticon("../3.png"));
-				doc.insertString(doc.getLength(), "<SAD>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../3.png"));
+//				doc.insertString(doc.getLength(), "<SAD>", doc.getStyle("icon"));
 			} else if (group.equals("<BSMILE>")) {
-				StyleConstants.setIcon(s, emoticon("../2.png"));
-				doc.insertString(doc.getLength(), "<BSMILE>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../2.png"));
+//				doc.insertString(doc.getLength(), "<BSMILE>", doc.getStyle("icon"));
 			} else if (group.equals("<TOUNGE>")) {
-				StyleConstants.setIcon(s, emoticon("../5.png"));
-				doc.insertString(doc.getLength(), "<TOUNGE>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../5.png"));
+//				doc.insertString(doc.getLength(), "<TOUNGE>", doc.getStyle("icon"));
 			} else if (group.equals("<CRY>")) {
-				StyleConstants.setIcon(s, emoticon("../4.png"));
-				doc.insertString(doc.getLength(), "<CRY>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../4.png"));
+//				doc.insertString(doc.getLength(), "<CRY>", doc.getStyle("icon"));
 			} else if (group.equals("<DEVIL>")) {
-				StyleConstants.setIcon(s, emoticon("../7.png"));
-				doc.insertString(doc.getLength(), "<DEVIL>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../7.png"));
+//				doc.insertString(doc.getLength(), "<DEVIL>", doc.getStyle("icon"));
 			} else if (group.equals("<ANGEL>")) {
-				StyleConstants.setIcon(s, emoticon("../6.png"));
-				doc.insertString(doc.getLength(), "<ANGEL>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../6.png"));
+//				doc.insertString(doc.getLength(), "<ANGEL>", doc.getStyle("icon"));
 			} else if (group.equals("<WINKING>")) {
-				StyleConstants.setIcon(s, emoticon("../9.png"));
-				doc.insertString(doc.getLength(), "<WINKING>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../9.png"));
+//				doc.insertString(doc.getLength(), "<WINKING>", doc.getStyle("icon"));
 			} else if (group.equals("<CONFUSE>")) {
-				StyleConstants.setIcon(s, emoticon("../8.png"));
-				doc.insertString(doc.getLength(), "<CONFUSE>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../8.png"));
+//				doc.insertString(doc.getLength(), "<CONFUSE>", doc.getStyle("icon"));
 			} else if (group.equals("<SURPRISE>")) {
-				StyleConstants.setIcon(s, emoticon("../10.png"));
-				doc.insertString(doc.getLength(), "<SURPRISE>", doc.getStyle("icon"));
+//				StyleConstants.setIcon(s, emoticon("../10.png"));
+//				doc.insertString(doc.getLength(), "<SURPRISE>", doc.getStyle("icon"));
 			}
 			previousMatch = endIndex;
 		}
 		String subText = actionText.substring(previousMatch); 
-		if (!subText.isEmpty()) { 
-			doc.insertString(doc.getLength(), subText, doc.getStyle("regular"));
-		}
-		doc.insertString(doc.getLength(), "\n", doc.getStyle("regular"));
+//		if (!subText.isEmpty()) { 
+//			doc.insertString(doc.getLength(), subText, doc.getStyle("regular"));
+//		}
+//		doc.insertString(doc.getLength(), "\n", doc.getStyle("regular"));
 	}
 
 	public ImageIcon emoticon(String path) {

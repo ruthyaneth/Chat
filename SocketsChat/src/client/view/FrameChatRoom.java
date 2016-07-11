@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import client.Controller;
@@ -46,6 +47,9 @@ public class FrameChatRoom extends JFrame {
 		panelListUserOnline.add(labelUsers);
 		panelListUserOnline.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 		this.add(panelListUserOnline, BorderLayout.EAST );
+	}
+	public JMenuItem getJMenuItemFileTransfer(){
+		 return menuChatRoom.getFileTransfer();
 	}
 	public void changeLenguage() throws IOException {
 

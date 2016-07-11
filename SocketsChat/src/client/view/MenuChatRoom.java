@@ -41,12 +41,20 @@ public class MenuChatRoom extends JMenuBar {
 
 	private void addMenuVoiceCall() {
 		voiceCall = new JMenuItem();
+		voiceCall.addActionListener(controller);
+		voiceCall.setActionCommand(ConstantsListener.A_MENU_VOICE_CALL);
 		this.add(voiceCall);
 	}
 
 	private void addMenuChatGoup() {
 		chatGroup = new JMenuItem();
+		chatGroup.addActionListener(controller);
+		chatGroup.setActionCommand(ConstantsListener.A_MENU_CHAT_GROUP);
 		this.add(chatGroup);
+	}
+
+	public JMenuItem getFileTransfer() {
+		return fileTransfer;
 	}
 
 	public void changeLenguage() throws IOException {

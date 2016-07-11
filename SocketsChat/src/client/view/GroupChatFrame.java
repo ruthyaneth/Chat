@@ -39,7 +39,6 @@ public class GroupChatFrame extends JFrame {
 	}
 	private void addInviteGroupChatButton(){
 		 inviteGroupChatButton = new JButton();
-		 groupChatPanel.add(inviteGroupChatButton);
 	}
 	private void addWelcomeGroupChatLabel(){
 		welcomeGroupChatLabel = new JLabel();
@@ -82,13 +81,13 @@ public class GroupChatFrame extends JFrame {
 		this.setLayout(new BorderLayout());
 		groupChatPanel.add(welcomeGroupChatLabel);
 		groupChatPanel.add(inviteGroupChatButton);
-		this.add(groupChatPanel, BorderLayout.NORTH); // frame > panel
-																// > label
-		this.add(groupChatScroll, BorderLayout.CENTER); // display
-																	// chat
+		this.add(groupChatPanel, BorderLayout.NORTH); 
+
+		this.add(groupChatScroll, BorderLayout.CENTER); 
+																
 		JPanel openChatPanel = new JPanel(new BorderLayout());
 		this.add(openChatPanel, BorderLayout.SOUTH);
-		openChatPanel.add(groupTypeArea, BorderLayout.CENTER); // typing area
+		openChatPanel.add(groupTypeArea, BorderLayout.CENTER);
 		groupChatTextPanel.setEditable(false);
 		openChatPanel.add(groupCloseButton, BorderLayout.SOUTH);
 		this.setVisible(false);
